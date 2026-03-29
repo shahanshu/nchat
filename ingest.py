@@ -11,7 +11,7 @@ VECTOR_DB_DIR = "./chroma_db"
 def ingest_syllabus():
     print("1. Looking for syllabus PDF...")
     if not os.path.exists(PDF_FILE_PATH):
-        print(f"❌ Error: Could not find '{PDF_FILE_PATH}'. Please put a PDF in this folder.")
+        print(f" Error: Could not find '{PDF_FILE_PATH}'. Please put a PDF in this folder.")
         return
 
     print("2. Loading PDF...")
@@ -48,7 +48,7 @@ def ingest_syllabus():
         persist_directory=VECTOR_DB_DIR
     )
     
-    print(f"✅ Success! Vector database saved locally at '{VECTOR_DB_DIR}'.")
+    print(f" Success! Vector database saved locally at '{VECTOR_DB_DIR}'.")
 
 if __name__ == "__main__":
     ingest_syllabus()
