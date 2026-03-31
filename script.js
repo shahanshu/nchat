@@ -112,13 +112,14 @@ function getMetricHtml(name, score) {
 }
 
 // --- Web Search Logic ---
+// --- Web Search Logic ---
 function appendWebSearchPrompt() {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'message bot-message';
     msgDiv.innerHTML = `
         <div class="message-content">
             ⚠️ <strong>Out of Syllabus Detected</strong><br>
-            This topic is outside your DBMS syllabus context. Would you like me to search the web for an answer?
+            This topic is outside your current IOE subjects context. Would you like me to search the web for an answer?
             <div class="action-buttons">
                 <button class="btn btn-yes" onclick="handleWebSearch(true, this)">✅ Yes, Search Web</button>
                 <button class="btn btn-no" onclick="handleWebSearch(false, this)">❌ No, Cancel</button>
