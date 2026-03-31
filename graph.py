@@ -4,8 +4,11 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.documents import Document
 from langchain_community.tools import DuckDuckGoSearchRun 
 
-from chains import retriever, retrieval_grader, rag_chain
 
+from langchain_core.prompts import ChatPromptTemplate  
+
+
+from chains import retriever, retrieval_grader, rag_chain, llm  
 class GraphState(TypedDict):
     question: str
     generation: str
@@ -53,8 +56,32 @@ def generate_node(state: GraphState):
     
     generation = rag_chain.invoke({"context": documents, "question": question})
     return {"documents": documents, "question": question, "generation": generation.content}
-
 def web_search_node(state: GraphState):
+    print("\n--- NODE: EXECUTING WEB SEARCH ---")
+    question = state["question"]
+    
+    # 1. Perform the raw search (this gets the ugly text)
+    raw_web_results = web_search_tool.invoke(question)
+    
+    # 2. Create a prompt to tell the LLM to clean up and format the answer
+    web_search_prompt = ChatPromptTemplate.from_messages([
+        ("system", """You are a helpful AI assistant. You just searched the web to answer the user's question because it was outside their course syllabus. 
+
+INSTRUCTIONS:
+1. Read the provided Web Search Results and synthesize a clear, accurate, and easy-to-read answer.
+2. Format your answer beautifully using Markdown (use headings, bullet points, and bold text).
+3. Start your response with an italicized note: *"I searched the web for this since it is outside your syllabus context."*
+4. Ignore any weird spacing or spelling errors in the raw web text. Make your final output perfect.
+5. If the web results do not contain the answer, politely say you couldn't find a good answer online."""),
+        ("human", "User Question: {question}\n\nWeb Search Results:\n{web_results}")
+    ])
+    
+    # 3. Pass the ugly results to the LLM to generate a beautiful markdown answer
+    web_chain = web_search_prompt | llm
+    response = web_chain.invoke({"question": question, "web_results": raw_web_results})
+    
+    # 4. Return the beautifully formatted text
+    return {"generation": response.content, "question": question}
     print("\n--- NODE: EXECUTING WEB SEARCH ---")
     question = state["question"]
     
