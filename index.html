@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IOE AI Assistant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>IOE AI Assistant | CRAG ChatBot</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -11,62 +11,73 @@
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Sidebar for Chat History (Now White Theme) -->
-        <div class="sidebar" id="sidebar">
-            <button id="new-chat-btn" class="new-chat-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                New Chat
+<div class="app-container">
+    <!-- Sidebar with New Chat, History List, and Clear All button -->
+    <div class="sidebar" id="sidebar">
+        <button id="new-chat-btn" class="new-chat-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            New Chat
+        </button>
+        <div class="history-title">Recent Chats</div>
+        <div class="chat-history" id="chat-history">
+            <!-- Chat history items injected dynamically -->
+        </div>
+        <!-- Clear All History Button -->
+        <button id="clear-all-btn" class="clear-all-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Clear All History
+        </button>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="chat-container">
+        <!-- Header with hamburger menu -->
+        <div class="chat-header">
+            <button id="menu-btn" class="menu-btn" title="Toggle Sidebar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </button>
-            <div class="history-title">Recent Chats</div>
-            <div class="chat-history" id="chat-history">
-                <!-- Chat history items will be generated here -->
+            <div class="header-content">
+                <img src="logo.jpg" alt="IOE Logo" class="header-logo" onerror="this.style.display='none'">
+                <div class="header-text">
+                    <h2>CRAG ChatBot</h2>
+                    <p>Ask me anything about your IOE Syllabus!</p>
+                </div>
             </div>
         </div>
 
-        <!-- Main Chat Area -->
-        <div class="chat-container">
-            <!-- Header -->
-            <!-- Header -->
-<div class="chat-header">
-    <!-- Hamburger Menu Button (Now at the leftmost position) -->
-    <button id="menu-btn" class="menu-btn" title="Toggle Sidebar">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-    </button>
+        <!-- Chat Messages Area -->
+        <div class="chat-box" id="chat-box">
+            <!-- Messages will appear here -->
+        </div>
 
-    <div class="header-content">
-        <img src="logo.jpg" alt="IOE Logo" class="header-logo" onerror="this.style.display='none'">
-        <div class="header-text">
-            <h2>CRAG ChatBot</h2>
-            <p>Ask me anything about your IOE Syllabus!</p>
+        <!-- Input Area and Footer -->
+        <div class="bottom-container">
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Ask about syllabus, marks, or topics..." autocomplete="off">
+                <button id="send-btn" title="Send message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="chat-footer">
+                @2026 By ANSHU | KRISH | MUKESH | NIRAJ
+            </div>
         </div>
     </div>
 </div>
 
-            <!-- Chat Messages Area -->
-            <div class="chat-box" id="chat-box">
-                <!-- Messages will be injected here via JS -->
-            </div>
-
-            <!-- Input Area and Footer -->
-            <div class="bottom-container">
-                <div class="input-area">
-                    <input type="text" id="user-input" placeholder="Ask about syllabus, marks, or topics..." autocomplete="off">
-                    <button id="send-btn" title="Send message">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
-                </div>
-                <div class="chat-footer">
-                    @2026 By ANSHU | KRISH |MUKESH |NIRAJ
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
