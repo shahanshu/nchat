@@ -3,12 +3,11 @@ from langgraph.graph import END, StateGraph
 from langgraph.checkpoint.memory import MemorySaver 
 from langchain_core.documents import Document
 from langchain_community.tools import DuckDuckGoSearchRun 
-
-
 from langchain_core.prompts import ChatPromptTemplate  
 
-
+# Make sure LLM is imported from chains!
 from chains import retriever, retrieval_grader, rag_chain, llm  
+
 class GraphState(TypedDict):
     question: str
     generation: str
@@ -56,6 +55,7 @@ def generate_node(state: GraphState):
     
     generation = rag_chain.invoke({"context": documents, "question": question})
     return {"documents": documents, "question": question, "generation": generation.content}
+
 def web_search_node(state: GraphState):
     print("\n--- NODE: EXECUTING WEB SEARCH ---")
     question = state["question"]
@@ -82,15 +82,6 @@ INSTRUCTIONS:
     
     # 4. Return the beautifully formatted text
     return {"generation": response.content, "question": question}
-    print("\n--- NODE: EXECUTING WEB SEARCH ---")
-    question = state["question"]
-    
-    # Perform the search
-    docs = web_search_tool.invoke(question)
-    
-    # Format the web results
-    msg = f"**Here is what I found from the web:**\n\n{docs}"
-    return {"generation": msg, "question": question}
 
 def decide_to_generate(state: GraphState):
     if state["web_search"] == "Yes":

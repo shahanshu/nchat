@@ -123,17 +123,5 @@ Unit 9: Advanced Database Concepts | 4 Hours | 6 Marks
 Total: 45 Hours | 80 Marks
 There can be minor deviations in the numbers.
 ```
-```
-Unit Hour Marks Distribution*
-1 3 4
-2 7 12
-3 7 12
-4 6 12
-5 4 8
-6 4 8
-7 6 12
-8 4 6
-9 4 6
-Total 45 80
-*There can be minor deviations in the numbers
+
 ```

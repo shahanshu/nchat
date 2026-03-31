@@ -167,7 +167,6 @@ Total: 45 Hours | 80 Marks
 
 There can be minor deviations in the numbers.
 ```
-```
-*There may be minor deviation in marks distribution
+
 ```
 

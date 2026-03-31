@@ -116,14 +116,4 @@ There can be minor deviations in the numbers.
 
 ```
 ```
-Unit Hour Marks Distribution*
-1 4 7
-2 4 7
-3 5 9
-4 8 14
-5 4 7
-6 6 10
-7 14 26
-Total 45 80
-*There can be minor deviations in the numbers
-```
+

@@ -16,17 +16,15 @@ def ingest_all_subjects():
     print("1. Loading Markdown Files (Syllabus & Marks)...")
     md_files = glob.glob(os.path.join(MD_DIR, "*.md"))
     for file_path in md_files:
-        # Extract subject name from filename (e.g., "ai.md" -> "AI")
         subject_name = os.path.basename(file_path).replace(".md", "").upper()
         loader = TextLoader(file_path, encoding='utf-8')
         docs = loader.load()
         
-        # Add metadata and prepend subject to content so the LLM knows what subject this is
         for doc in docs:
             doc.metadata["subject"] = subject_name
             doc.metadata["doc_type"] = "syllabus_marks"
-            # INJECT HEADER: This is the magic trick for multi-subject RAG
-            doc.page_content = f"[SUBJECT: {subject_name} | TYPE: SYLLABUS & MARKS]\n\n" + doc.page_content
+            # INJECT HEADER WITH SPECIFIC MARKS KEYWORD
+            doc.page_content = f"[SUBJECT: {subject_name} | TYPE: SYLLABUS, TOPICS & MARKS ALLOCATION]\n\n" + doc.page_content
         
         all_documents.extend(docs)
         print(f"   -> Loaded {subject_name} Markdown.")
@@ -34,7 +32,6 @@ def ingest_all_subjects():
     print("\n2. Loading PDF Files (Course Content)...")
     pdf_files = glob.glob(os.path.join(PDF_DIR, "*.pdf"))
     for file_path in pdf_files:
-        # Extract subject name from filename (e.g., "ai.pdf" -> "AI")
         subject_name = os.path.basename(file_path).replace(".pdf", "").upper()
         loader = PyPDFLoader(file_path)
         docs = loader.load()
@@ -42,7 +39,6 @@ def ingest_all_subjects():
         for doc in docs:
             doc.metadata["subject"] = subject_name
             doc.metadata["doc_type"] = "course_content"
-            # INJECT HEADER
             doc.page_content = f"[SUBJECT: {subject_name} | TYPE: COURSE CONTENT]\n\n" + doc.page_content
         
         all_documents.extend(docs)
@@ -53,9 +49,10 @@ def ingest_all_subjects():
         return
 
     print("\n3. Splitting text into chunks...")
+    # INCREASED TO 1500 SO TABLES DO NOT GET CUT IN HALF
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
+        chunk_size=1500,
+        chunk_overlap=300,
         add_start_index=True
     )
     chunks = text_splitter.split_documents(all_documents)
