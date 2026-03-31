@@ -57,11 +57,13 @@ function appendBotMessage(text, metrics = null) {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'message bot-message';
     
-    // Convert Markdown bold (**text**) to HTML bold (<b>text</b>) for web search results
-    const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    // Parse the markdown text into proper HTML with headings, lists, and line breaks
+    const formattedText = marked.parse(text);
     
-    let contentHtml = `<div class="message-content">${formattedText}`;
+    // Add 'markdown-body' class so we can style it beautifully in CSS
+    let contentHtml = `<div class="message-content markdown-body">${formattedText}`;
     
+    // Append the metrics if they exist
     if (metrics) {
         contentHtml += `<div class="metrics-panel">
             ${getMetricHtml('Ans Relevance', metrics.answerRelevance)}
