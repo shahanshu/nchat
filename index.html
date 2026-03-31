@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IOE AI Assistant</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -12,26 +14,38 @@
     <div class="chat-container">
         <!-- Header -->
         <div class="chat-header">
-            <h2>CRAG ChatBot</h2>
-            <p>Ask me anything about your IOE Syllabus (AI, OS, Embedded, etc.)!</p>
+            <div class="header-content">
+                <img src="logo.jpg" alt="IOE Logo" class="header-logo" onerror="this.style.display='none'">
+                <div class="header-text">
+                    <h2>CRAG ChatBot</h2>
+                    <p>Ask me anything about your IOE Syllabus!</p>
+                </div>
+            </div>
         </div>
 
         <!-- Chat Messages Area -->
         <div class="chat-box" id="chat-box">
             <!-- Bot Welcome Message -->
             <div class="message bot-message">
+                <img src="logo.png" alt="Bot" class="avatar bot-avatar" onerror="this.style.display='none'">
                 <div class="message-content">
-                    Hello! I am your IOE Syllabus Assistant. I can help you with subjects like <b>Artificial Intelligence, Operating Systems, and Embedded Systems</b>.<br><br>You can ask me about marks allocation, syllabus topics, or course content! How can I help you today?
+                    <p>Hello! I am your IOE Syllabus Assistant. I can help you with subjects like <b>Artificial Intelligence, Operating Systems, and Embedded Systems</b>.</p>
+                    <p>You can ask me about marks allocation, syllabus topics, or course content! How can I help you today?</p>
                 </div>
             </div>
         </div>
 
-        <!-- Input Area -->
-        <div class="input-area">
-            <input type="text" id="user-input" placeholder="Ask about syllabus, marks, or topics (e.g., 'AI marks allocation')..." autocomplete="off">
-            <button id="send-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            </button>
+        <!-- Input Area and Footer -->
+        <div class="bottom-container">
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Ask about syllabus, marks, or topics..." autocomplete="off">
+                <button id="send-btn" title="Send message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+            <div class="chat-footer">
+                @2024 CRAG. All rights reserved. | Developed IOEPC
+            </div>
         </div>
     </div>
 

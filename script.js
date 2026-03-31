@@ -48,7 +48,10 @@ async function handleUserInput() {
 function appendUserMessage(text) {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'message user-message';
-    msgDiv.innerHTML = `<div class="message-content">${text}</div>`;
+    msgDiv.innerHTML = `
+        <div class="avatar user-avatar">U</div>
+        <div class="message-content">${text}</div>
+    `;
     chatBox.appendChild(msgDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
@@ -60,8 +63,11 @@ function appendBotMessage(text, metrics = null) {
     // Parse the markdown text into proper HTML with headings, lists, and line breaks
     const formattedText = marked.parse(text);
     
-    // Add 'markdown-body' class so we can style it beautifully in CSS
-    let contentHtml = `<div class="message-content markdown-body">${formattedText}`;
+    // HTML with logo avatar and markdown content
+    let contentHtml = `
+        <img src="logo.png" alt="Bot" class="avatar bot-avatar" onerror="this.style.display='none'">
+        <div class="message-content markdown-body">${formattedText}
+    `;
     
     // Append the metrics if they exist
     if (metrics) {
@@ -86,7 +92,16 @@ function appendLoadingMessage() {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'message bot-message';
     msgDiv.id = id;
-    msgDiv.innerHTML = `<div class="message-content"><em>Thinking...</em></div>`;
+    
+    // New bouncing dots typing indicator
+    msgDiv.innerHTML = `
+        <img src="logo.png" alt="Bot" class="avatar bot-avatar" onerror="this.style.display='none'">
+        <div class="message-content">
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    `;
     chatBox.appendChild(msgDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
     return id;
@@ -114,11 +129,11 @@ function getMetricHtml(name, score) {
 }
 
 // --- Web Search Logic ---
-// --- Web Search Logic ---
 function appendWebSearchPrompt() {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'message bot-message';
     msgDiv.innerHTML = `
+        <img src="logo.png" alt="Bot" class="avatar bot-avatar" onerror="this.style.display='none'">
         <div class="message-content">
             ⚠️ <strong>Out of Syllabus Detected</strong><br>
             This topic is outside your current IOE subjects context. Would you like me to search the web for an answer?
