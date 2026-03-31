@@ -9,31 +9,30 @@ from langchain_core.output_parsers import StrOutputParser
 load_dotenv()
 
 # ==========================================
-# 1. SETUP RETRIEVER
+# 1. SETUP EMBEDDINGS & VECTORSTORE
 # ==========================================
-print("Loading Multi-Subject Vector Database...")
+# This vectorstore is used by graph.py for filtered retrieval
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
 
-# INCREASED k=6: Pull more chunks for multi-subject accuracy
-retriever = vectorstore.as_retriever(search_kwargs={"k": 6}) 
+# ==========================================
+# 2. SETUP LLM (Llama 3.3 70B for High Accuracy)
+# ==========================================
+
+llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 
 # ==========================================
-# 2. SETUP LLM
+# 3. THE GRADER (Checks if document is relevant)
 # ==========================================
-llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
-
-# ==========================================
-# 3. THE GRADER (Checks if in syllabus)
-# ==========================================
-system_grader = """You are an intelligent syllabus grader assessing the relevance of a retrieved document to a user's question.
+system_grader = """You are an intelligent syllabus grader. 
+Assess if the retrieved document contains information relevant to the student's question.
 
 RULES:
-1. CHITCHAT/GREETINGS: If the user's input is a simple greeting or casual conversation (e.g., "hi", "hello", "how are you", "thank you", "who are you"), ALWAYS grade it as 'yes'.
-2. RELEVANT: If the input is about engineering subjects (like AI, OS, Embedded Systems, etc.), syllabus structure, topics, marks, exams, or computer science concepts, AND the document contains related info, grade it as 'yes'.
-3. IRRELEVANT / OUT OF SYLLABUS: If the user asks about a completely unrelated topic (e.g., history, sports, cooking, politics) or a technical question with zero relevance to the retrieved documents, grade it as 'no'.
+1. GREETINGS: If the question is a greeting (hi, hello, etc.), output 'yes'.
+2. SUBJECT MATTER: If the document contains keywords related to the student's question (even if it's just a chapter title or a marks list), output 'yes'.
+3. SYLLABUS: If the user asks about marks or weightage and the document is a syllabus list, output 'yes'.
 
-Output exactly 'yes' or 'no' without any extra words or punctuation."""
+Output exactly 'yes' or 'no'."""
 
 grade_prompt = ChatPromptTemplate.from_messages([
     ("system", system_grader),
@@ -43,20 +42,23 @@ grade_prompt = ChatPromptTemplate.from_messages([
 retrieval_grader = grade_prompt | llm | StrOutputParser()
 
 # ==========================================
-# 4. THE GENERATOR (Answers the question)
+# 4. THE GENERATOR (The Main Brain)
 # ==========================================
-system_generator = """You are a friendly and helpful AI Teaching Assistant for Engineering (IOE) students. You assist with subjects like Artificial Intelligence (AI), Operating Systems (OS), Embedded Systems, etc.
+system_generator = """You are a highly accurate AI Teaching Assistant for IOE Engineering students. 
+You provide information about subjects like Artificial Intelligence (AI), Operating Systems (OS), and Database Management Systems (DBMS).
 
-INSTRUCTIONS:
-1. CHITCHAT: If the user says hello or thanks, respond politely.
-2. IDENTIFY THE SUBJECT: Pay close attention to the [SUBJECT: ...] and [TYPE: ...] tags at the beginning of the context blocks below. 
-3. AMBIGUITY: If the user asks a general question without specifying a subject, politely ask them to clarify (e.g., "Are you asking about AI or OS?").
-4. STRICT MARKS POLICY: When asked about marks allocation, evaluation, or weightage, you MUST ONLY use the exact numbers provided in the context below. UNDER NO CIRCUMSTANCES should you invent, guess, or use external knowledge for marks. If the exact marks are not in the context, reply: "I'm sorry, but the exact marks allocation is not provided in the current syllabus documents."
-5. COURSE CONTENT: For conceptual questions, base your answer on context tagged with [TYPE: COURSE CONTENT].
-6. OUT OF CONTEXT: If a technical question isn't explicitly in the context, provide a brief answer based on your general knowledge, but add: "*(Note: This specific detail might not be explicitly in your syllabus documents.)*"
-7. Format your answers beautifully using Markdown (bold text, bullet points, headings).
+The context you receive is labeled with two specific tags:
+- [SYLLABUS DATA]: This is the official list of Units, Chapters, and Marks. 
+- [COURSE CONTENT]: This is detailed technical knowledge from textbooks/PDFs.
 
-Syllabus/Content Context:
+STRICT OPERATING RULES:
+1. MARKS & CHAPTERS: If the user asks about marks, weightage, or "what is in chapter X", you MUST prioritize the information in [SYLLABUS DATA]. 
+2. ACCURACY: Do not invent or guess marks. If [SYLLABUS DATA] says marks are "included" or "Total: 80", report exactly that.
+3. TECHNICAL QUESTIONS: For questions like "Explain Paging" or "What is A* search?", use the [COURSE CONTENT] to provide a detailed technical answer.
+4. AMBIGUITY: If the user asks a general question (e.g., "What are the marks for Unit 1?"), check if multiple subjects are in the context. If so, ask: "Are you asking about AI, OS, or DBMS?"
+5. FORMATTING: Always use Markdown. Use bold headers for Unit names and bullet points for lists.
+
+Context:
 {context}"""
 
 generate_prompt = ChatPromptTemplate.from_messages([
@@ -64,4 +66,5 @@ generate_prompt = ChatPromptTemplate.from_messages([
     ("human", "{question}")
 ])
 
+# This chain is called by generate_node in graph.py
 rag_chain = generate_prompt | llm
